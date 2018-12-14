@@ -1,0 +1,5 @@
+rootProject.name = 'weather-base-api'
+
+include 'weather-forecast-api'
+include 'weather-history-log-api'
+include 'weather-data-storage'
