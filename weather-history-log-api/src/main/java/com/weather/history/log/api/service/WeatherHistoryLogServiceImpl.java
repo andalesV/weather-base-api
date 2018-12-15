@@ -35,7 +35,7 @@ public class WeatherHistoryLogServiceImpl implements WeatherHistoryLogService {
 		Collections.sort(list);
 		List<WeatherLogDto> listOfWeather = getWeatherForecast();
 		Set<Integer> top5 = new HashSet<Integer>(list.subList(list.size() - 5, list.size()));
-		List<WeatherLog> weatherLogListDb = weatherLogRepository.findAll();
+		List<WeatherLog> weatherLogListDb = getWeatherLogDb();
 
 		List<WeatherLog> weatherLogList = new ArrayList<>();
 		for (WeatherLogDto logDto : listOfWeather) {
@@ -77,6 +77,24 @@ public class WeatherHistoryLogServiceImpl implements WeatherHistoryLogService {
 
 	}
 
+	@Override
+	public List<WeatherLogDto> getWeatherLog() {
+		List<WeatherLogDto> weatherLogDtoList = new ArrayList<>();
+		WeatherLogDto weatherLogDto = null;
+		for (WeatherLog log : getWeatherLogDb()) {
+			weatherLogDto = new WeatherLogDto();
+			weatherLogDto.setId(log.getId());
+			weatherLogDto.setActualWeather(log.getActualWeather());
+			weatherLogDto.setDtimeInserted(log.getDtimeInserted());
+			weatherLogDto.setLocation(log.getLocation());
+			weatherLogDto.setResponseId(log.getResponseId());
+			weatherLogDto.setTemperature(log.getTemperature());
+			weatherLogDtoList.add(weatherLogDto);
+		}
+
+		return weatherLogDtoList;
+	}
+
 	private List<WeatherLogDto> getWeatherForecast() {
 		List<WeatherLogDto> weatherLogDtoList = new ArrayList<>();
 		List<WeatherForecastDto> weatherForecastDtoList = weatherForecast.comsumeWeatherInformation();
@@ -96,6 +114,10 @@ public class WeatherHistoryLogServiceImpl implements WeatherHistoryLogService {
 		}
 
 		return weatherLogDtoList;
+	}
+
+	private List<WeatherLog> getWeatherLogDb() {
+		return weatherLogRepository.findAll();
 	}
 
 	private Timestamp getTimestamp() {
